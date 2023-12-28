@@ -11,6 +11,14 @@ class BarPage extends StatefulWidget {
 }
 
 class _BarPageState extends State<BarPage> {
+  int index = 0;
+  bool showAxis = false;
+  bool centerX = false;
+  bool waterfallMode = false;
+  WaterfallBarDirection? waterfallBarDirection;
+
+  Color barBackground = Colors.transparent;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +29,7 @@ class _BarPageState extends State<BarPage> {
               right: 20.0,
             ),
             child: GestureDetector(
-              onTap: () => setState(() {}),
+              onTap: () => changeChartLayout(),
               child: const Icon(
                 Icons.refresh,
                 size: 26.0,
@@ -52,14 +60,53 @@ class _BarPageState extends State<BarPage> {
     );
   }
 
+  void changeChartLayout() {
+    switch (++index % 6) {
+      case 0:
+        showAxis = false;
+        centerX = false;
+        waterfallMode = false;
+        waterfallBarDirection = null;
+        barBackground = Colors.transparent;
+        break;
+      case 1:
+        showAxis = true;
+        break;
+      case 2:
+        showAxis = true;
+        centerX = true;
+        break;
+      case 3:
+        showAxis = true;
+        centerX = true;
+        barBackground = const Color(0x54EE7B3D);
+        break;
+      case 4:
+        showAxis = true;
+        centerX = true;
+        barBackground = const Color(0x54EE7B3D);
+        waterfallMode = true;
+        waterfallBarDirection = WaterfallBarDirection.toLeft;
+        break;
+      case 5:
+        showAxis = true;
+        centerX = true;
+        barBackground = const Color(0x54EE7B3D);
+        waterfallMode = true;
+        waterfallBarDirection = WaterfallBarDirection.toRight;
+        break;
+    }
+    setState(() {});
+  }
+
   List<ChartLayer> layers() {
     return [
       ChartAxisLayer(
         settings: ChartAxisSettings(
-          centerX: true,
-          waterfallMode: true,
+          centerX: centerX,
+          waterfallMode: waterfallMode,
           x: ChartAxisSettingsAxis(
-            showAxis: true,
+            showAxis: showAxis,
             frequency: 1.0,
             max: 7.0,
             min: 0.0,
@@ -78,7 +125,7 @@ class _BarPageState extends State<BarPage> {
             ),
           ),
         ),
-        labelX: (value) => value.toInt().toString() + "s",
+        labelX: (value) => value.toInt().toString(),
         labelY: (value) => value.toInt().toString(),
       ),
       ChartBarLayer(
@@ -90,11 +137,11 @@ class _BarPageState extends State<BarPage> {
             x: index.toDouble(),
           ),
         ),
-        settings: const ChartBarSettings(
+        settings: ChartBarSettings(
           thickness: 8.0,
-          barBackground: Color(0x54EE7B3D),
-          waterfallBarDirection: WaterfallBarDirection.toLeft,
-          radius: BorderRadius.all(Radius.circular(4.0)),
+          barBackground: barBackground, //Color(0x54EE7B3D),
+          waterfallBarDirection: waterfallBarDirection,
+          radius: const BorderRadius.all(Radius.circular(4.0)),
         ),
       ),
     ];
