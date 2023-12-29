@@ -11,13 +11,21 @@ class BarPage extends StatefulWidget {
 }
 
 class _BarPageState extends State<BarPage> {
-  int index = 0;
+  int index = 4;
   bool showAxis = false;
   bool centerX = false;
-  bool waterfallMode = false;
   WaterfallBarDirection? waterfallBarDirection;
 
   Color barBackground = Colors.transparent;
+
+  @override
+  void initState() {
+    super.initState();
+    showAxis = true;
+    centerX = true;
+    barBackground = const Color(0x54EE7B3D);
+    waterfallBarDirection = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +73,6 @@ class _BarPageState extends State<BarPage> {
       case 0:
         showAxis = false;
         centerX = false;
-        waterfallMode = false;
         waterfallBarDirection = null;
         barBackground = Colors.transparent;
         break;
@@ -85,14 +92,12 @@ class _BarPageState extends State<BarPage> {
         showAxis = true;
         centerX = true;
         barBackground = const Color(0x54EE7B3D);
-        waterfallMode = true;
         waterfallBarDirection = WaterfallBarDirection.toLeft;
         break;
       case 5:
         showAxis = true;
         centerX = true;
         barBackground = const Color(0x54EE7B3D);
-        waterfallMode = true;
         waterfallBarDirection = WaterfallBarDirection.toRight;
         break;
     }
@@ -104,7 +109,6 @@ class _BarPageState extends State<BarPage> {
       ChartAxisLayer(
         settings: ChartAxisSettings(
           centerX: centerX,
-          waterfallMode: waterfallMode,
           x: ChartAxisSettingsAxis(
             showAxis: showAxis,
             frequency: 1.0,
@@ -135,6 +139,14 @@ class _BarPageState extends State<BarPage> {
             color: Colors.accents[index],
             value: Random().nextInt(50) + 5,
             x: index.toDouble(),
+            gradient: LinearGradient(
+              colors: [
+                Colors.accents[index],
+                Colors.accents[index + 4],
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
         ),
         settings: ChartBarSettings(

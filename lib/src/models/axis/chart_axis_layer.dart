@@ -27,9 +27,6 @@ class ChartAxisLayer extends ChartLayer {
     required String Function(double) labelY,
     required this.settings,
   }) {
-    if (settings.waterfallMode) {
-      settings.x.max += settings.x.frequency;
-    }
     x = settings.x.generate(
       label: labelX,
       center: settings.centerX,

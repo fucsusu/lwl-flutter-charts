@@ -39,7 +39,9 @@ class _ChartBarPainter {
           topLeft: layer.settings.radius.topLeft,
           topRight: layer.settings.radius.topRight,
         ),
-        Paint()..color = item.currentValueColor,
+        Paint()
+          ..color = item.currentValueColor
+          ..shader = item.gradient?.createShader(item.currentValuePos & item.currentValueSize),
       );
 
       touchableShapes.add(RectangleShape<ChartBarDataItem>(
@@ -70,14 +72,16 @@ class _ChartBarPainter {
       painterData.position.dy + painterData.size.height - size.height,
     );
     item.setupValue(
-      color: item.color,
       controller: controller,
+      color: item.color,
       initialColor: oldItem?.lastValueColor ?? Colors.transparent,
+      pos: pos.translate(0, -upShiftOffset),
       initialPos: oldItem?.lastValuePos ??
           Offset(pos.dx, painterData.position.dy + painterData.size.height).translate(0, -upShiftOffset),
-      initialSize: oldItem?.lastValueSize ?? Size(size.width, 0.0),
-      pos: pos.translate(0, -upShiftOffset),
       size: size,
+      initialSize: oldItem?.lastValueSize ?? Size(size.width, 0.0),
+      gradient: item.gradient,
+      initialGradient: oldItem?.gradient,
     );
     item.setupTouch(
       controller: controller,

@@ -5,9 +5,6 @@ class ChartAxisSettings {
   /// X轴是否居中显示
   final bool centerX;
 
-  /// 是否是瀑布模式
-  final bool waterfallMode;
-
   /// The x of the axis.
   final ChartAxisSettingsAxis x;
 
@@ -18,6 +15,5 @@ class ChartAxisSettings {
     required this.x,
     required this.y,
     this.centerX = false,
-    this.waterfallMode = false,
   });
 }

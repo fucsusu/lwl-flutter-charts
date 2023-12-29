@@ -1,6 +1,6 @@
-# Charts Flutter
+# lwl-flutter-charts
 
-简单美观流畅的动画图表。基于https://github.com/merixstudio/mrx-flutter-charts该项目做的修改。
+简单美观流畅的动画图表。基于[该项目](https://github.com/merixstudio/mrx-flutter-charts)做的修改。
 
 ## Supported charts
 
@@ -13,9 +13,9 @@
 2.支持背景颜色的柱状图  
 3.自定义单个柱子的颜色  
 4.瀑布图的支持
+5.渐变色支持  
 
 待实现  
-***5.渐变色支持***  
 ***6.入场向上弹起动画***  
 ***7.点击缩放***  
 ***8.交错正负轴***  
@@ -42,5 +42,3 @@
 ## Example
 
 Check `/example` folder for more detailed usage
-
-# lwl-flutter-charts

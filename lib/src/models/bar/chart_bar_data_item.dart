@@ -5,8 +5,11 @@ class ChartBarDataItem extends ChartDataItem {
   /// The color of data item.
   final Color color;
 
+  /// 渐变色
+  final Gradient? gradient;
+
   /// The value of data item.
-  final double value;
+  double value;
 
   /// The axis x of data item.
   double x;
@@ -18,6 +21,7 @@ class ChartBarDataItem extends ChartDataItem {
     required this.color,
     required this.value,
     required this.x,
+    this.gradient,
   })  : _touch = _ChartBarDataItemTouch(),
         _value = _ChartBarDataItemValue();
 
@@ -107,6 +111,8 @@ class ChartBarDataItem extends ChartDataItem {
     Offset? initialPos,
     Size? initialSize,
     ChartBarDataItem? oldItem,
+    Gradient? gradient,
+    Gradient? initialGradient,
   }) {
     _value.setup(
       color: color,
@@ -117,6 +123,8 @@ class ChartBarDataItem extends ChartDataItem {
       oldValue: oldItem?._value,
       pos: pos,
       size: size,
+      gradient: gradient,
+      initialGradient: initialGradient,
     );
   }
 }
@@ -185,16 +193,21 @@ class _ChartBarDataItemValue {
   final ChartColorAnimation _color;
   final ChartPositionAnimation _pos;
   final ChartSizeAnimation _size;
+  final ChartGradientAnimation _gradient;
 
   _ChartBarDataItemValue()
       : _color = ChartColorAnimation(),
         _pos = ChartPositionAnimation(),
-        _size = ChartSizeAnimation();
+        _size = ChartSizeAnimation(),
+        _gradient = ChartGradientAnimation();
 
   /// Current color during the animation.
   ///
   /// Defaults to Colors.transparent
   Color get currentColor => _color.current;
+
+  ///获取当前gradient
+  Gradient? get currentGradient => _gradient.current;
 
   /// Current position during the animation.
   ///
@@ -211,6 +224,8 @@ class _ChartBarDataItemValue {
   /// Defaults to Colors.transparent
   Color get lastColor => _color.last;
 
+  Gradient? get lastGradient => _gradient.last;
+
   /// Last position on finish/stop animation.
   ///
   /// Defaults to Offset.zero
@@ -226,6 +241,7 @@ class _ChartBarDataItemValue {
     _color.dispose();
     _pos.dispose();
     _size.dispose();
+    _gradient.dispose();
   }
 
   /// Initialize animations.
@@ -237,8 +253,16 @@ class _ChartBarDataItemValue {
     Color? initialColor,
     Offset? initialPos,
     Size? initialSize,
+    Gradient? gradient,
+    Gradient? initialGradient,
     _ChartBarDataItemValue? oldValue,
   }) {
+    _gradient.setup(
+      gradient: gradient,
+      controller: controller,
+      initialGradient: initialGradient,
+      oldAnimation: oldValue?._gradient,
+    );
     _color.setup(
       color: color,
       controller: controller,
