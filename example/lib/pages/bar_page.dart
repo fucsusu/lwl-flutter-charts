@@ -11,7 +11,7 @@ class BarPage extends StatefulWidget {
 }
 
 class _BarPageState extends State<BarPage> {
-  int index = 4;
+  int index = 5;
   bool showAxis = false;
   bool centerX = false;
   WaterfallBarDirection? waterfallBarDirection;
@@ -59,9 +59,7 @@ class _BarPageState extends State<BarPage> {
           padding: const EdgeInsets.all(24.0),
           child: Chart(
             layers: layers(),
-            padding: const EdgeInsets.symmetric(horizontal: 12.0).copyWith(
-              bottom: 12.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0).copyWith(bottom: 12.0),
           ),
         ),
       ),
@@ -69,7 +67,7 @@ class _BarPageState extends State<BarPage> {
   }
 
   void changeChartLayout() {
-    switch (++index % 6) {
+    switch (index % 6) {
       case 0:
         showAxis = false;
         centerX = false;
@@ -98,7 +96,6 @@ class _BarPageState extends State<BarPage> {
         showAxis = true;
         centerX = true;
         barBackground = const Color(0x54EE7B3D);
-        waterfallBarDirection = WaterfallBarDirection.toRight;
         break;
     }
     setState(() {});
@@ -137,7 +134,7 @@ class _BarPageState extends State<BarPage> {
           8,
           (index) => ChartBarDataItem(
             color: Colors.accents[index],
-            value: Random().nextInt(50) + 5,
+            value: Random().nextInt(50) + 50,
             x: index.toDouble(),
             gradient: LinearGradient(
               colors: [
@@ -150,10 +147,31 @@ class _BarPageState extends State<BarPage> {
           ),
         ),
         settings: ChartBarSettings(
-          thickness: 8.0,
-          barBackground: barBackground, //Color(0x54EE7B3D),
+          thickness: 10.0,
+          touchThickness: 70,
+          barBackground: barBackground,
           waterfallBarDirection: waterfallBarDirection,
           radius: const BorderRadius.all(Radius.circular(4.0)),
+        ),
+      ),
+      ChartTooltipLayer(
+        shape: () => ChartTooltipBarShape<ChartBarDataItem>(
+          backgroundColor: Colors.white,
+          currentPos: (item) => item.currentValuePos,
+          currentSize: (item) => item.currentValueSize,
+          onTextValue: (item) => '€${item.value.toString()}',
+          marginBottom: 6.0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12.0,
+            vertical: 8.0,
+          ),
+          radius: 6.0,
+          textStyle: const TextStyle(
+            color: Color(0xFF8043F9),
+            letterSpacing: 0.2,
+            fontSize: 14.0,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     ];

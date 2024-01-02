@@ -17,20 +17,20 @@ class ChartBarSettings {
   /// Defaults to BorderRadius.zero
   final double thickness;
 
+  ///点击范围 默认取值thickness
+  final double? touchThickness;
+
   ///背景颜色
   final Color? barBackground;
 
   ///瀑布图瀑布走向
   final WaterfallBarDirection? waterfallBarDirection;
 
-  /// 频率需与ChartAxisSettingsAxis的frequency一致 用于计算
-  final double frequency;
-
   const ChartBarSettings({
     this.thickness = 4.0,
+    this.touchThickness,
     this.radius = BorderRadius.zero,
     this.barBackground,
     this.waterfallBarDirection,
-    this.frequency = 1.0,
   });
 }

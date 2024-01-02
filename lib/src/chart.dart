@@ -23,7 +23,7 @@ class Chart extends StatefulWidget {
 
   const Chart({
     this.duration = const Duration(
-      milliseconds: 300,
+      milliseconds: 400,
     ),
     this.layers = const [],
     this.padding = EdgeInsets.zero,

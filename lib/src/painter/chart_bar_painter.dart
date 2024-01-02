@@ -67,10 +67,18 @@ class _ChartBarPainter {
       settings.thickness,
       painterData.size.height * (item.value - yValue.min) / (yValue.max - yValue.min),
     );
+
+    //点击范围
+    final Size touchSize = Size(
+      min(settings.touchThickness ?? settings.thickness, painterData.size.width / (xValue.max - xValue.min)),
+      painterData.size.height * (item.value - yValue.min) / (yValue.max - yValue.min),
+    );
+
     final Offset pos = Offset(
       painterData.position.dx + offsetX - size.width.half,
       painterData.position.dy + painterData.size.height - size.height,
     );
+
     item.setupValue(
       controller: controller,
       color: item.color,
@@ -86,9 +94,9 @@ class _ChartBarPainter {
     item.setupTouch(
       controller: controller,
       initialPos: oldItem?.lastValuePos ?? Offset(pos.dx, painterData.position.dy).translate(0, -upShiftOffset),
-      initialSize: oldItem?.lastValueSize ?? Size(size.width, painterData.size.height),
+      initialSize: oldItem?.lastValueSize ?? Size(touchSize.width, painterData.size.height),
       pos: Offset(pos.dx, painterData.position.dy).translate(0, -upShiftOffset),
-      size: Size(size.width, painterData.size.height),
+      size: Size(touchSize.width, painterData.size.height),
     );
   }
 
