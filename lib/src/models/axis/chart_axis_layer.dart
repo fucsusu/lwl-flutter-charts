@@ -13,7 +13,7 @@ part 'settings/chart_axis_settings_axis.dart';
 /// This layer allows to render axises.
 class ChartAxisLayer extends ChartLayer {
   /// The x of the axis.
-  late final ChartAxisData x;
+  late ChartAxisData x;
 
   /// The y of the axis.
   late final ChartAxisData y;
@@ -21,9 +21,11 @@ class ChartAxisLayer extends ChartLayer {
   /// The settings of the axis.
   final ChartAxisSettings settings;
 
+  String Function(double) labelX;
+
   /// 对坐标轴进行数值转化
   ChartAxisLayer({
-    required String Function(double) labelX,
+    required this.labelX,
     required String Function(double) labelY,
     required this.settings,
   }) {
@@ -33,6 +35,13 @@ class ChartAxisLayer extends ChartLayer {
     );
     y = settings.y.generate(
       label: labelY,
+    );
+  }
+
+  void updateXChartAxisData() {
+    x = settings.x.generate(
+      label: labelX,
+      center: settings.centerX,
     );
   }
 

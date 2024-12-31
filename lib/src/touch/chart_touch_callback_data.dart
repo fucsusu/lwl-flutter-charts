@@ -9,8 +9,12 @@ class ChartTouchCallbackData {
   /// The last item has been clicked.
   final ChartDataItem selectedItem;
 
-  const ChartTouchCallbackData({
+  ///缩放次数
+  int scaleCount;
+
+  ChartTouchCallbackData({
     required this.selectedItem,
     this.clickedPos,
+    this.scaleCount = 1,
   });
 }

@@ -1,10 +1,6 @@
-import 'package:mrx_charts/src/models/chart_data_item.dart';
-import 'package:mrx_charts/src/models/chart_layer.dart';
-import 'package:mrx_charts/src/models/touchable/touchable_shape.dart';
-import 'package:mrx_charts/src/painter/chart_painter.dart';
-import 'package:mrx_charts/src/touch/chart_touch_detector.dart';
-import 'package:mrx_charts/src/touch/chart_touch_callback_data.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../mrx_charts.dart';
 
 /// Widget of charts.
 class Chart extends StatefulWidget {
@@ -40,6 +36,9 @@ class _ChartState extends State<Chart> with TickerProviderStateMixin {
   List<TouchableShape<ChartDataItem>> _touchableShapes = [];
   ChartTouchCallbackData? _touchedData;
 
+  ///缩放中心
+  ChartTouchCallbackData? _scaleCenterData;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +60,7 @@ class _ChartState extends State<Chart> with TickerProviderStateMixin {
       setState(() {
         oldLayers = oldWidget.layers;
         _touchedData = null;
+        _scaleCenterData = null;
         _disposeOldLayers();
         _controller
           ..stop()
@@ -79,6 +79,9 @@ class _ChartState extends State<Chart> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //缩放处理数据
+    List<ChartLayer> layers = scaleProcessLayers(widget.layers);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -96,10 +99,19 @@ class _ChartState extends State<Chart> with TickerProviderStateMixin {
                             selectedItem: data,
                           );
                   })),
+              onDoubleTap: (touchPosition, data) {
+                _scaleCenterData = data == null
+                    ? null
+                    : ChartTouchCallbackData(
+                        clickedPos: touchPosition,
+                        selectedItem: data,
+                        scaleCount: (_scaleCenterData?.scaleCount ?? 0) + 1,
+                      );
+              },
               child: CustomPaint(
                 painter: ChartPainter(
                   controller: _controller,
-                  layers: widget.layers,
+                  layers: layers,
                   oldLayers: oldLayers,
                   onUpdateTouchableShapes: (shapes) => _touchableShapes = shapes,
                   padding: widget.padding,
@@ -117,5 +129,57 @@ class _ChartState extends State<Chart> with TickerProviderStateMixin {
     for (final ChartLayer layer in oldLayers ?? []) {
       layer.dispose();
     }
+  }
+
+  List<ChartLayer> scaleProcessLayers(List<ChartLayer> layers) {
+    List<ChartLayer> tempLayers = List<ChartLayer>.from(layers);
+    if (_scaleCenterData != null) {
+      //先处理数据
+      final ChartLayer? chartBarLayer = tempLayers.firstWhereOrNull((element) => element is ChartBarLayer);
+      final ChartLayer? charAxisLayer = tempLayers.firstWhereOrNull((element) => element is ChartAxisLayer);
+
+      int scaleCount = _scaleCenterData!.scaleCount;
+      bool lackData = false;
+      if (chartBarLayer is ChartBarLayer && charAxisLayer is ChartAxisLayer) {
+        if (chartBarLayer.items.length < charAxisLayer.x.items.length) {
+          charAxisLayer.x.min = chartBarLayer.minX;
+          charAxisLayer.x.max = chartBarLayer.maxX;
+          charAxisLayer.updateXChartAxisData();
+          scaleCount--;
+          lackData = true;
+        }
+
+        if (chartBarLayer.items.length > 1) {
+          int residueScale = 1;
+          if (scaleCount <= chartBarLayer.items.length ~/ 2) {
+            residueScale = (chartBarLayer.items.length ~/ 2 - scaleCount) * 2 + 1;
+          } else {
+            scaleCount = chartBarLayer.items.length ~/ 2;
+            if (lackData) {
+              scaleCount++;
+            }
+          }
+          chartBarLayer.updateItemsByCenter(_scaleCenterData!.selectedItem, residueScale);
+        }
+      }
+    }
+    return tempLayers;
+  }
+}
+
+extension _ListExtensions<T> on List<T> {
+  // List<T> copy() => [...this];
+  //
+  // T? get firstOrNull => isNotEmpty ? first : null;
+  //
+  // T? get lastOrNull => isNotEmpty ? last : null;
+  //
+  // T? getOrNull(int index) => length > index ? this[index] : null;
+
+  T? firstWhereOrNull(bool Function(T element) test) {
+    for (var element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 }

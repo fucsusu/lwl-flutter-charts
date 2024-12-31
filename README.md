@@ -6,8 +6,8 @@
 
 ### Bar
 
-原本功能
-![Screenshot1](https://raw.githubusercontent.com/fucsusu/lwl-flutter-charts/develop/screenshots/chart_bar.gif)
+原本功能  
+![Screenshot1](https://raw.githubusercontent.com/fucsusu/lwl-flutter-charts/develop/screenshots/chart_bar.gif)  
 添加目标功能：  
 1.坐标轴刻度对齐  
 2.支持背景颜色的柱状图  
@@ -17,9 +17,10 @@
 
 待实现
 ***6.点击缩放***  
-***7.交错正负轴***  
-***8.动态排序柱状图***  
-当前实现：
+***7.柱状图下钻***  
+***8.交错正负轴***  
+***9.动态排序柱状图***  
+当前实现：  
 ![Screenshot1](https://raw.githubusercontent.com/fucsusu/lwl-flutter-charts/develop/screenshots/chart_bar_update.gif)
 
 ### Group bar

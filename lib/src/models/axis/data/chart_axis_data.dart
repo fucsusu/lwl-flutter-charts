@@ -9,7 +9,7 @@ class ChartAxisData {
   double max;
 
   /// The min value in the data.
-  final double min;
+  double min;
 
   ChartAxisData({
     required this.items,

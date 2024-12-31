@@ -64,6 +64,7 @@ class ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final ChartTouchCallbackData? currentTouchedData = touchedData;
+
     _calculate(size);
     ChartAxisValue xValue = const ChartAxisValue.empty();
     ChartAxisValue yValue = const ChartAxisValue.empty();

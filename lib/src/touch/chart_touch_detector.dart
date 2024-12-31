@@ -10,6 +10,9 @@ class ChartTouchDetector<T> extends StatefulWidget {
   /// The function reacted by tap on widget.
   final void Function(Offset touchPosition, T? data)? onTap;
 
+  ///双击
+  final void Function(Offset touchPosition, T? data)? onDoubleTap;
+
   /// The list of shapes.
   final List<TouchableShape<T>>? shapes;
 
@@ -20,6 +23,7 @@ class ChartTouchDetector<T> extends StatefulWidget {
     required this.onShapes,
     this.child,
     this.onTap,
+    this.onDoubleTap,
     this.shapes,
     Key? key,
   }) : super(key: key);
@@ -40,33 +44,45 @@ class _ChartTouchDetectorState<T> extends State<ChartTouchDetector<T>> {
         if (widget.onTap == null) {
           return;
         }
-        List shapes = widget.onShapes();
-        for (int i = 0; i < shapes.length; i++) {
-          TouchableShape<T> shape = shapes[i];
-          if (shape is RectangleShape) {
-            if (shape.isHit(tapUpDetails.localPosition)) {
-              if (shapeIndex == i) {
-                lastIndex++;
-                if (lastIndex >= (shape as RectangleShape).dataList.length) {
-                  lastIndex = 0;
-                }
-              } else {
-                shapeIndex = i;
-                lastIndex = 0;
-              }
-              widget.onTap?.call(tapUpDetails.localPosition, (shape as RectangleShape).dataList[lastIndex]);
-              return;
-            }
-          } else {
-            if (shape.isHit(tapUpDetails.localPosition)) {
-              widget.onTap?.call(tapUpDetails.localPosition, shape.data);
-              return;
-            }
-          }
+        getTapShape(widget.onTap, tapUpDetails.localPosition);
+      },
+      onDoubleTap: () {
+      },
+      onDoubleTapDown: (TapDownDetails tapUpDetails) {
+        if (widget.onDoubleTap == null) {
+          return;
         }
-        widget.onTap?.call(tapUpDetails.localPosition, null);
+        getTapShape(widget.onDoubleTap, tapUpDetails.localPosition);
       },
       child: widget.child,
     );
+  }
+
+  void getTapShape(void Function(Offset touchPosition, T? data)? tapCallBack, Offset localPosition) {
+    List shapes = widget.onShapes();
+    for (int i = 0; i < shapes.length; i++) {
+      TouchableShape<T> shape = shapes[i];
+      if (shape is RectangleShape) {
+        if (shape.isHit(localPosition)) {
+          if (shapeIndex == i) {
+            lastIndex++;
+            if (lastIndex >= (shape as RectangleShape).dataList.length) {
+              lastIndex = 0;
+            }
+          } else {
+            shapeIndex = i;
+            lastIndex = 0;
+          }
+          tapCallBack?.call(localPosition, (shape as RectangleShape).dataList[lastIndex]);
+          return;
+        }
+      } else {
+        if (shape.isHit(localPosition)) {
+          tapCallBack?.call(localPosition, shape.data);
+          return;
+        }
+      }
+    }
+    tapCallBack?.call(localPosition, null);
   }
 }

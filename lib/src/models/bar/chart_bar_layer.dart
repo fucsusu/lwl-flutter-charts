@@ -17,6 +17,12 @@ class ChartBarLayer extends ChartLayer {
   /// The settings of bars.
   final ChartBarSettings settings;
 
+  /// 最小值
+  late double minX;
+
+  /// 最大值
+  late double maxX;
+
   ChartBarLayer({
     required this.items,
     required this.settings,
@@ -37,7 +43,21 @@ class ChartBarLayer extends ChartLayer {
       }
       items.first.value = total;
     }
+    items.sort((a, b) => a.x.compareTo(b.x));
+    if (items.isNotEmpty) {
+      minX = items.first.x;
+      maxX = items.last.x;
+    } else {
+      minX = 0;
+      maxX = 0;
+    }
   }
+
+  void updateItemsByCenter(ChartDataItem centerItem,int len){
+
+  }
+
+
 
   /// Disposing all animations.
   @override
